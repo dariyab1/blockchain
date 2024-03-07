@@ -1,3 +1,5 @@
+//Dariya Beksultan, Mr. Irimina, Period 3/4, Even
+
 const SHA256 = require('crypto-js/sha256');
 
 class Block{
@@ -12,8 +14,6 @@ class Block{
     return SHA256(this.index+this.previousHash+this.timestamp+JSON.stringify(this.data)).toString();
 }
 }
-
-
 
 class Blockchain{
     constructor(){
@@ -33,9 +33,22 @@ class Blockchain{
         newBlock.hash=newBlock.calculateHash();
         this.chain.push(newBlock);
     }
+
+    isChainValid(){
+        for(let i=1; i<this.chain.length; i++){
+            const currentBlock=this.chain[i];
+            const prevBlock=this.chain[i-1];
+            if(!(currentBlock.hash==prevBlock.hash)){
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 let btCoin=new Blockchain();
 btCoin.addBlock(new Block(1, "1/2/2022", {name:"TM", amount:4}));
 btCoin.addBlock(new Block(2, "2/2/2022", {name:"TMI", amount:4}));
+btCoin.chain[1].data = {amount: 100};
 console.log(JSON.stringify(btCoin, null, 4));
+console.log("is this chain valid? " + btCoin.isChainValid());
