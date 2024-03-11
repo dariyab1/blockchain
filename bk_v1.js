@@ -34,11 +34,15 @@ class Blockchain{
         this.chain.push(newBlock);
     }
 
+    //v3
     isChainValid(){
         for(let i=1; i<this.chain.length; i++){
             const currentBlock=this.chain[i];
             const prevBlock=this.chain[i-1];
-            if(!(currentBlock.hash==prevBlock.hash)){
+            if(!(prevBlock.hash===currentBlock.previousHash)){
+                return false;
+            }
+            if(!(currentBlock.hash===currentBlock.calculateHash())){
                 return false;
             }
         }
@@ -46,9 +50,15 @@ class Blockchain{
     }
 }
 
+
 let btCoin=new Blockchain();
 btCoin.addBlock(new Block(1, "1/2/2022", {name:"TM", amount:4}));
 btCoin.addBlock(new Block(2, "2/2/2022", {name:"TMI", amount:4}));
-btCoin.chain[1].data = {amount: 100};
+
+//v3
+btCoin.addBlock(new Block(3, "2/11/2022", {name:"db", amount:2}));
+btCoin.addBlock(new Block(4, "2/12/2022", {name:"dbm", amount:1}));
+
+btCoin.chain[1].hash = btCoin.chain[2].calculateHash();
 console.log(JSON.stringify(btCoin, null, 4));
 console.log("is this chain valid? " + btCoin.isChainValid());
